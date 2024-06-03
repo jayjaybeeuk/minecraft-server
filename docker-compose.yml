@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  minecraft:
+    image: itzg/minecraft-server
+    container_name: minecraft-server
+    ports:
+      - "25565:25565"
+    environment:
+      EULA: "TRUE"
+      VERSION: "LATEST"
+      TYPE: "PAPER" # Change to SPIGOT or PAPER for plugin support
+    volumes:
+      - ./minecraft-data:/data
+
+volumes:
+  minecraft-data:
