@@ -9,7 +9,7 @@ A simple little experiment to create a docker container for hosting a minecraft 
 
 To run this, simply type:
 
-`docker-compose up -d`
+`docker compose up -d`
 
 # Further changes
 
@@ -21,7 +21,11 @@ You can do more with this!
 The Minecraft server properties file (server.properties) allows you to configure many aspects of the server. To edit this file:
 
 2. Locate the File:
-The server.properties file is located in the ./minecraft-data directory that you mapped in the docker-compose.yml.
+The server.properties file lives inside the persisted `/data` folder in the container.
+
+This repo uses a **named Docker volume** (`minecraft-data`) mounted at `/data` to keep world + config data persistent across container recreation.
+
+If you prefer a bind mount (a local folder you can edit directly), you can change the volume mapping in `docker-compose.yml` to something like `./minecraft-data:/data`.
 
 3. Edit the File:
 Open server.properties with a text editor. Here are some common settings you might want to change:
@@ -34,14 +38,14 @@ Open server.properties with a text editor. Here are some common settings you mig
 After making changes, save the file and restart the server:
 
     `
-    docker-compose restart
+    docker compose restart
     `
 
 # Debugging
 
 Access the sever console:
 
-`docker-compose exec minecraft rcon-cli`
+`docker compose exec minecraft rcon-cli`
 
 # Pre-requisites
 
