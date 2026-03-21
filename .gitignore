@@ -1,1 +1,20 @@
 minecraft-data
+backups/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+
+# Plugin-generated/runtime files that should stay out of git
+plugin-config/**/data/
+plugin-config/**/web/
+plugin-config/**/locale/
+plugin-config/**/translations/
+plugin-config/**/libs/
+plugin-config/**/*.db
+plugin-config/**/*.mv.db
+plugin-config/**/*.tmp
+plugin-config/**/userdata/
+plugin-config/**/userdata-npc-backup/
+plugin-config/**/warps/
+plugin-config/**/messages/
