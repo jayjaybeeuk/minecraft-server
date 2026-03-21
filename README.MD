@@ -178,6 +178,9 @@ Commands:
 This creates a timestamped zip file in `./backups/`, which is ignored by git.
 
 If you are about to do a risky plugin or version change, it is also worth copying `minecraft-data/` to another disk or cloud location.
+    `
+    docker compose restart
+    `
 
 # Debugging
 
