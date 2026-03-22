@@ -1,18 +1,28 @@
-version: '3.8'
-
 services:
   minecraft:
     image: itzg/minecraft-server
     container_name: minecraft-server
     ports:
       - "25565:25565"
+      - "8080:8080"
     environment:
       EULA: "TRUE"
-      VERSION: "LATEST"
+      VERSION: "1.21.11"
       TYPE: "PAPER" # Change to SPIGOT or PAPER for plugin support
+      PLUGINS_FILE: /extras/plugins.txt
+      RESOURCE_PACK: "https://codeload.github.com/greatericontop/weaponmasterresources/zip/d4fef373b8924b9819349333cbc3728d4967158c"
+      RESOURCE_PACK_SHA1: "1d50b167e77cc39b48131c0a8419901e89fe4a3b"
     volumes:
-      # Persist world + config data in a named Docker volume (survives container recreation)
-      - minecraft-data:/data
-
-volumes:
-  minecraft-data:
+      # Persist world + config data in a local folder for easier inspection and backups
+      - ./minecraft-data:/data
+      - ./plugins.txt:/extras/plugins.txt:ro
+      - ./plugin-config/WeaponMaster/config.yml:/data/plugins/WeaponMaster/config.yml
+      - ./plugin-config/WeaponMaster/descent.yml:/data/plugins/WeaponMaster/descent.yml
+      - ./plugin-config/Essentials/config.yml:/data/plugins/Essentials/config.yml
+      - ./plugin-config/Essentials/custom_items.yml:/data/plugins/Essentials/custom_items.yml
+      - ./plugin-config/Essentials/kits.yml:/data/plugins/Essentials/kits.yml
+      - ./plugin-config/Essentials/motd.txt:/data/plugins/Essentials/motd.txt
+      - ./plugin-config/Essentials/tpr.yml:/data/plugins/Essentials/tpr.yml
+      - ./plugin-config/Essentials/worth.yml:/data/plugins/Essentials/worth.yml
+      - ./plugin-config/LuckPerms/config.yml:/data/plugins/LuckPerms/config.yml
+      - ./plugin-config/LuckPerms/contexts.json:/data/plugins/LuckPerms/contexts.json

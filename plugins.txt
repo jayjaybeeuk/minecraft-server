@@ -1,0 +1,17 @@
+# squaremap pinned for reproducible installs.
+# Official Paper build for Minecraft 1.21.11.
+https://hangarcdn.papermc.io/plugins/jmp/squaremap/versions/1.3.12/PAPER/squaremap-paper-mc1.21.11-1.3.12.jar
+
+# WeaponMaster pinned for reproducible installs.
+# Official Paper/Spigot build for Minecraft 1.21.11.
+https://cdn.modrinth.com/data/JB3ramgc/versions/lwYZdKQz/weaponmaster-1.13.0.jar
+
+# EssentialsX modules restored from the previous setup.
+# These are pinned to the exact old versions that were previously installed.
+https://github.com/EssentialsX/Essentials/releases/download/2.21.2/EssentialsX-2.21.2.jar
+https://github.com/EssentialsX/Essentials/releases/download/2.21.2/EssentialsXChat-2.21.2.jar
+https://github.com/EssentialsX/Essentials/releases/download/2.21.2/EssentialsXSpawn-2.21.2.jar
+
+# LuckPerms and Vault restored to support permissions/chat/economy bridges.
+https://cdn.modrinth.com/data/Vebnzrzj/versions/cfNN7sys/LuckPerms-Bukkit-5.4.145.jar
+https://github.com/MilkBowl/Vault/releases/download/1.7.3/Vault.jar
