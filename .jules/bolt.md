@@ -1,3 +1,7 @@
 ## 2025-02-12 - Explicit memory limits in itzg/minecraft-server
 **Learning:** The popular `itzg/minecraft-server` Docker image defaults to only 1GB of memory. This is highly inadequate for modern Minecraft servers (like 1.21+ Paper) with plugins. It doesn't automatically adapt to container memory limits without explicit environment variables, and it doesn't automatically enable optimized Java GC tuning unless you're explicitly using 12GB+ memory.
 **Action:** Always verify if `MEMORY` or `MAX_MEMORY` is explicitly configured in `docker-compose.yml`. For server types like Paper, explicitly enable Aikar's optimized GC flags with `USE_AIKAR_FLAGS=true` alongside memory allocation (like `MEMORY=4G`) to prevent GC stalls and TPS drops.
+
+## 2025-02-12 - EssentialsX AFK Move Event listener lag
+**Learning:** In Minecraft plugins, the `PlayerMoveEvent` is fired extremely often (every time a player moves their head or body a tiny fraction). EssentialsX listens to this by default just to check if an AFK player should be un-AFK'd (`cancel-afk-on-move: true`). On servers with many players, this creates constant, unnecessary load on the main server thread.
+**Action:** Always set `cancel-afk-on-move: false` in Essentials config. Players will still be removed from AFK status when they use chat or commands, or interact with blocks (`cancel-afk-on-interact: true`), which are far less frequent and expensive events to monitor.
