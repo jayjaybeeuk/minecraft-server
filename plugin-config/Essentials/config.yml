@@ -497,7 +497,8 @@ cancel-afk-on-interact: true
 # Should we automatically remove afk status when a player moves?
 # Player will be removed from AFK on chat/command regardless of this setting.
 # Disable this to reduce server lag.
-cancel-afk-on-move: true
+# BOLT OPTIMIZATION: Disabled to reduce server lag from PlayerMoveEvent listeners
+cancel-afk-on-move: false
 
 # Should we automatically remove afk status when a player sends a chat message?
 cancel-afk-on-chat: true
