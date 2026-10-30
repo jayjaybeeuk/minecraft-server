@@ -17,6 +17,8 @@ $timestamp = Get-Date -Format "yyyy-MM-dd-HHmmss"
 $archiveName = "minecraft-data-$timestamp.zip"
 $archivePath = Join-Path $backupPath $archiveName
 
-Compress-Archive -Path (Join-Path $sourcePath "*") -DestinationPath $archivePath -CompressionLevel Optimal
+# Minecraft region files (.mca) and many assets are already heavily compressed.
+# Using Optimal wastes significant CPU time for almost 0 space savings.
+Compress-Archive -Path (Join-Path $sourcePath "*") -DestinationPath $archivePath -CompressionLevel Fastest
 
 Write-Output "Backup created: $archivePath"
