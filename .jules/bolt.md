@@ -9,3 +9,7 @@
 ## 2023-11-01 - EssentialsX PlayerMoveEvent Bottleneck
 **Learning:** Plugins like EssentialsX that track AFK status by default listen to `PlayerMoveEvent`. In a Minecraft server, `PlayerMoveEvent` is fired extremely frequently (dozens of times per second per moving player). Leaving `cancel-afk-on-move: true` enabled means the server spends significant main-thread CPU time just checking if players are AFK on every tiny movement, acting as a massive bottleneck as player count scales.
 **Action:** When configuring or optimizing plugins that monitor activity, always disable movement-based checks (like `cancel-afk-on-move: false`) in favor of chat, command, or interaction-based checks to dramatically reduce event spam and preserve TPS.
+
+## 2023-11-05 - Squaremap Player Tracker Overhead
+**Learning:** Mapping plugins like Squaremap have a `player-tracker` feature that broadcasts player positions to the web interface. By default, this is often set to an aggressive `update-interval-seconds: 1`. On a busy server, generating and broadcasting this JSON payload every single second consumes unnecessary main thread CPU cycles and network/IO overhead.
+**Action:** When configuring web maps or player trackers, increase the update interval (e.g., to 3 or 5 seconds) to dramatically reduce server processing load while maintaining an acceptable UX for the web map.
