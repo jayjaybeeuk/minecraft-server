@@ -2,7 +2,8 @@ config-version: 4
 settings:
     event-listeners:
         BlockExplodeEvent: true
-        LeavesDecayEvent: true
+        # ⚡ Bolt optimization: Disable leaf decay tracking to prevent massive chunk update spam
+        LeavesDecayEvent: false
         EntityBlockFormEvent: true
         BlockFadeEvent: true
         ChunkPopulateEvent: true

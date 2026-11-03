@@ -13,3 +13,7 @@
 ## 2023-11-05 - Squaremap Player Tracker Overhead
 **Learning:** Mapping plugins like Squaremap have a `player-tracker` feature that broadcasts player positions to the web interface. By default, this is often set to an aggressive `update-interval-seconds: 1`. On a busy server, generating and broadcasting this JSON payload every single second consumes unnecessary main thread CPU cycles and network/IO overhead.
 **Action:** When configuring web maps or player trackers, increase the update interval (e.g., to 3 or 5 seconds) to dramatically reduce server processing load while maintaining an acceptable UX for the web map.
+
+## 2025-02-12 - Squaremap LeavesDecayEvent Spam
+**Learning:** In mapping plugins like Squaremap, having `LeavesDecayEvent: true` in the event listeners causes immense block update spam. When a player chops down a single tree, the subsequent natural decay of the leaves triggers hundreds of individual block update events spread over a minute or more. This forces the map to constantly re-render the chunk for almost no visual change, consuming significant CPU and IO resources.
+**Action:** Always ensure `LeavesDecayEvent: false` is set in the advanced event-listeners for mapping plugins to prevent massive render queue spam and wasted CPU cycles on trivial visual updates.
