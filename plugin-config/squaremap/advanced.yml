@@ -10,7 +10,8 @@ settings:
         BlockPlaceEvent: true
         BlockBreakEvent: true
         StructureGrowEvent: true
-        FluidLevelChangeEvent: true
+        # ⚡ Bolt optimization: Disable fluid level change tracking to prevent massive chunk update spam from flowing water/lava
+        FluidLevelChangeEvent: false
         BlockSpreadEvent: true
         BlockBurnEvent: true
         EntityChangeBlockEvent: true

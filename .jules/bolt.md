@@ -17,3 +17,7 @@
 ## 2025-02-12 - Squaremap LeavesDecayEvent Spam
 **Learning:** In mapping plugins like Squaremap, having `LeavesDecayEvent: true` in the event listeners causes immense block update spam. When a player chops down a single tree, the subsequent natural decay of the leaves triggers hundreds of individual block update events spread over a minute or more. This forces the map to constantly re-render the chunk for almost no visual change, consuming significant CPU and IO resources.
 **Action:** Always ensure `LeavesDecayEvent: false` is set in the advanced event-listeners for mapping plugins to prevent massive render queue spam and wasted CPU cycles on trivial visual updates.
+
+## 2025-02-12 - Squaremap FluidLevelChangeEvent Spam
+**Learning:** In mapping plugins like Squaremap, having `FluidLevelChangeEvent: true` causes constant, massive block update spam near flowing water or lava. Liquid dynamics trigger a new event on every block change iteration. This forces the map to constantly re-render the affected chunk for minor liquid height changes, wasting significant CPU and IO resources.
+**Action:** Always ensure `FluidLevelChangeEvent: false` is set in the advanced event-listeners for mapping plugins to avoid massive render queue spam and wasted server resources on minor visual liquid updates.
