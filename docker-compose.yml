@@ -10,6 +10,7 @@ services:
       VERSION: "1.21.11"
       TYPE: "PAPER" # Change to SPIGOT or PAPER for plugin support
       MEMORY: "4G"
+      INIT_MEMORY: "4G" # Aikar flag best practice: Xms should equal Xmx
       USE_AIKAR_FLAGS: "true"
       PLUGINS_FILE: /extras/plugins.txt
       RESOURCE_PACK: "https://codeload.github.com/greatericontop/weaponmasterresources/zip/d4fef373b8924b9819349333cbc3728d4967158c"

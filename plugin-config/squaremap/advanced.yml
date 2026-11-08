@@ -2,20 +2,23 @@ config-version: 4
 settings:
     event-listeners:
         BlockExplodeEvent: true
-        LeavesDecayEvent: true
+        # ⚡ Bolt optimization: Disable leaf decay tracking to prevent massive chunk update spam
+        LeavesDecayEvent: false
         EntityBlockFormEvent: true
         BlockFadeEvent: true
         ChunkPopulateEvent: true
         BlockPlaceEvent: true
         BlockBreakEvent: true
         StructureGrowEvent: true
-        FluidLevelChangeEvent: true
+        # ⚡ Bolt optimization: Disable fluid level change tracking to prevent massive chunk update spam from flowing water/lava
+        FluidLevelChangeEvent: false
         BlockSpreadEvent: true
         BlockBurnEvent: true
         EntityChangeBlockEvent: true
         EntityExplodeEvent: true
         BlockFormEvent: true
-        BlockGrowEvent: true
+        # ⚡ Bolt optimization: Disable block grow tracking (crops) to prevent massive chunk update spam
+        BlockGrowEvent: false
         PlayerChunkLoadEvent: false
         BlockPhysicsEvent: false
         PlayerQuitEvent: false
