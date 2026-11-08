@@ -21,3 +21,7 @@
 ## 2025-02-12 - Squaremap FluidLevelChangeEvent Spam
 **Learning:** In mapping plugins like Squaremap, having `FluidLevelChangeEvent: true` causes constant, massive block update spam near flowing water or lava. Liquid dynamics trigger a new event on every block change iteration. This forces the map to constantly re-render the affected chunk for minor liquid height changes, wasting significant CPU and IO resources.
 **Action:** Always ensure `FluidLevelChangeEvent: false` is set in the advanced event-listeners for mapping plugins to avoid massive render queue spam and wasted server resources on minor visual liquid updates.
+
+## 2026-10-31 - Squaremap BlockGrowEvent Spam
+**Learning:** In mapping plugins like Squaremap, having `BlockGrowEvent: true` in the event listeners can cause unnecessary block update spam in agricultural or naturally overgrown areas. Crops growing incrementally generate constant events. This forces the map to constantly re-render chunks for very minor visual changes, consuming significant CPU and IO resources without providing meaningful map updates.
+**Action:** Always ensure `BlockGrowEvent: false` is set in the advanced event-listeners for mapping plugins to avoid massive render queue spam and wasted server resources on minor visual crop growth updates.
