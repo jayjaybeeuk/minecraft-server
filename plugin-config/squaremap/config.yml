@@ -78,7 +78,8 @@ world-settings:
                 enabled: 'false'
         player-tracker:
             enabled: true
-            update-interval-seconds: 1
+            # ⚡ Bolt optimization: Increased from 1 to 3 to reduce server CPU/IO load from constant JSON updates
+            update-interval-seconds: 3
             show-controls: true
             default-hidden: false
             layer-priority: 2
