@@ -17,7 +17,8 @@ settings:
         EntityChangeBlockEvent: true
         EntityExplodeEvent: true
         BlockFormEvent: true
-        BlockGrowEvent: true
+        # ⚡ Bolt optimization: Disable block grow tracking (crops) to prevent massive chunk update spam
+        BlockGrowEvent: false
         PlayerChunkLoadEvent: false
         BlockPhysicsEvent: false
         PlayerQuitEvent: false
