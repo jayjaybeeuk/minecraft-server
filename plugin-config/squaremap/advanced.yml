@@ -12,7 +12,8 @@ settings:
         StructureGrowEvent: true
         # ⚡ Bolt optimization: Disable fluid level change tracking to prevent massive chunk update spam from flowing water/lava
         FluidLevelChangeEvent: false
-        BlockSpreadEvent: true
+        # ⚡ Bolt optimization: Disable block spread tracking to prevent massive chunk update spam from spreading grass/vines
+        BlockSpreadEvent: false
         BlockBurnEvent: true
         EntityChangeBlockEvent: true
         EntityExplodeEvent: true
