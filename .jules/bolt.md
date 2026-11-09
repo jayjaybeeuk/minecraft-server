@@ -25,3 +25,7 @@
 ## 2026-10-31 - Squaremap BlockGrowEvent Spam
 **Learning:** In mapping plugins like Squaremap, having `BlockGrowEvent: true` in the event listeners can cause unnecessary block update spam in agricultural or naturally overgrown areas. Crops growing incrementally generate constant events. This forces the map to constantly re-render chunks for very minor visual changes, consuming significant CPU and IO resources without providing meaningful map updates.
 **Action:** Always ensure `BlockGrowEvent: false` is set in the advanced event-listeners for mapping plugins to avoid massive render queue spam and wasted server resources on minor visual crop growth updates.
+
+## 2026-11-01 - Squaremap BlockSpreadEvent Spam
+**Learning:** In mapping plugins like Squaremap, having `BlockSpreadEvent: true` in the event listeners can cause unnecessary block update spam from naturally spreading blocks like grass, mycelium, and vines. This forces the map to constantly re-render chunks for very minor visual changes, consuming significant CPU and IO resources without providing meaningful map updates.
+**Action:** Always ensure `BlockSpreadEvent: false` is set in the advanced event-listeners for mapping plugins to avoid massive render queue spam and wasted server resources on minor visual block spread updates.
