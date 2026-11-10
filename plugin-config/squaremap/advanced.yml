@@ -4,8 +4,10 @@ settings:
         BlockExplodeEvent: true
         # ⚡ Bolt optimization: Disable leaf decay tracking to prevent massive chunk update spam
         LeavesDecayEvent: false
-        EntityBlockFormEvent: true
-        BlockFadeEvent: true
+        # ⚡ Bolt optimization: Disable frost walker ice formation chunk update spam
+        EntityBlockFormEvent: false
+        # ⚡ Bolt optimization: Disable ice/snow melting chunk update spam
+        BlockFadeEvent: false
         ChunkPopulateEvent: true
         BlockPlaceEvent: true
         BlockBreakEvent: true
@@ -17,7 +19,8 @@ settings:
         BlockBurnEvent: true
         EntityChangeBlockEvent: true
         EntityExplodeEvent: true
-        BlockFormEvent: true
+        # ⚡ Bolt optimization: Disable natural snow/ice formation chunk update spam
+        BlockFormEvent: false
         # ⚡ Bolt optimization: Disable block grow tracking (crops) to prevent massive chunk update spam
         BlockGrowEvent: false
         PlayerChunkLoadEvent: false
