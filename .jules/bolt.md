@@ -29,3 +29,7 @@
 ## 2026-11-01 - Squaremap BlockSpreadEvent Spam
 **Learning:** In mapping plugins like Squaremap, having `BlockSpreadEvent: true` in the event listeners can cause unnecessary block update spam from naturally spreading blocks like grass, mycelium, and vines. This forces the map to constantly re-render chunks for very minor visual changes, consuming significant CPU and IO resources without providing meaningful map updates.
 **Action:** Always ensure `BlockSpreadEvent: false` is set in the advanced event-listeners for mapping plugins to avoid massive render queue spam and wasted server resources on minor visual block spread updates.
+
+## 2025-02-13 - Squaremap Weather and Frost Walker Block Updates
+**Learning:** In mapping plugins like Squaremap, events related to transient blocks like snow and ice cause immense chunk update spam. Natural snow accumulation (`BlockFormEvent`), ice/snow melting (`BlockFadeEvent`), and players walking with Frost Walker boots (`EntityBlockFormEvent`) trigger constant, rapid block updates that force the map to re-render the affected chunks. These changes are visually negligible on a web map but consume significant CPU and IO resources.
+**Action:** Always ensure `BlockFormEvent: false`, `BlockFadeEvent: false`, and `EntityBlockFormEvent: false` are set in the advanced event-listeners for mapping plugins to avoid massive render queue spam and wasted server resources on minor visual weather/ice updates.
