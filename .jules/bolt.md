@@ -33,3 +33,7 @@
 ## 2025-02-13 - Squaremap Weather and Frost Walker Block Updates
 **Learning:** In mapping plugins like Squaremap, events related to transient blocks like snow and ice cause immense chunk update spam. Natural snow accumulation (`BlockFormEvent`), ice/snow melting (`BlockFadeEvent`), and players walking with Frost Walker boots (`EntityBlockFormEvent`) trigger constant, rapid block updates that force the map to re-render the affected chunks. These changes are visually negligible on a web map but consume significant CPU and IO resources.
 **Action:** Always ensure `BlockFormEvent: false`, `BlockFadeEvent: false`, and `EntityBlockFormEvent: false` are set in the advanced event-listeners for mapping plugins to avoid massive render queue spam and wasted server resources on minor visual weather/ice updates.
+
+## 2023-11-12 - Plugin Config Unmounted Issue
+**Learning:** Highly optimized configuration files in a repository (like `plugin-config/squaremap/advanced.yml`) have no effect if they are not explicitly bind-mounted into the Docker container via `docker-compose.yml`. A server can run with default, unoptimized settings while giving the illusion of being optimized because the repo contains modified configuration files.
+**Action:** Always verify that optimized plugin configuration files stored in the repository are explicitly bind-mounted in the `docker-compose.yml` volumes section.
