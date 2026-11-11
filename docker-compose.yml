@@ -29,3 +29,6 @@ services:
       - ./plugin-config/Essentials/worth.yml:/data/plugins/Essentials/worth.yml
       - ./plugin-config/LuckPerms/config.yml:/data/plugins/LuckPerms/config.yml
       - ./plugin-config/LuckPerms/contexts.json:/data/plugins/LuckPerms/contexts.json
+      # ⚡ Bolt optimization: Mount optimized squaremap configs to prevent massive CPU/IO overhead
+      - ./plugin-config/squaremap/config.yml:/data/plugins/squaremap/config.yml
+      - ./plugin-config/squaremap/advanced.yml:/data/plugins/squaremap/advanced.yml
