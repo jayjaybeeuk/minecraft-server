@@ -37,3 +37,7 @@
 ## 2023-11-12 - Plugin Config Unmounted Issue
 **Learning:** Highly optimized configuration files in a repository (like `plugin-config/squaremap/advanced.yml`) have no effect if they are not explicitly bind-mounted into the Docker container via `docker-compose.yml`. A server can run with default, unoptimized settings while giving the illusion of being optimized because the repo contains modified configuration files.
 **Action:** Always verify that optimized plugin configuration files stored in the repository are explicitly bind-mounted in the `docker-compose.yml` volumes section.
+
+## 2026-11-12 - Squaremap Render Threads Starving Main Thread
+**Learning:** By default, mapping plugins like Squaremap set `max-render-threads: -1`, which tells the plugin to use all available CPU cores for rendering map tiles. On a Minecraft server, which heavily relies on a single main thread for game logic, maximizing CPU usage across all cores for background map rendering can starve the main thread of resources, leading to severe TPS (Ticks Per Second) drops and lag spikes during heavy map generation or update periods.
+**Action:** Always explicitly limit map render threads (e.g., `max-render-threads: 1` or `2`) in both primary and background render settings to ensure the server reserves enough CPU capacity for the main game thread, trading slower map updates for stable game performance.

@@ -37,7 +37,8 @@ world-settings:
             display-name: '{world}'
             order: 0
             icon: ''
-            max-render-threads: -1
+            # ⚡ Bolt optimization: Limit to 1 thread to avoid starving the main server thread
+            max-render-threads: 1
             iterate-up: false
             max-height: -1
             biomes:
@@ -58,7 +59,8 @@ world-settings:
                 enabled: true
                 max-chunks-per-interval: 1024
                 interval-seconds: 15
-                max-render-threads: -1
+                # ⚡ Bolt optimization: Limit to 1 thread to avoid starving the main server thread
+                max-render-threads: 1
             markers:
                 update-interval-seconds: 5
                 spawn-icon:
