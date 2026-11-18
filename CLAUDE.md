@@ -22,6 +22,8 @@ docker compose up -d
 docker compose logs -f
 
 docker compose down
+
+powershell -ExecutionPolicy Bypass -File .\scripts\update-minecraft-server.ps1
 ```
 
 ## Common changes

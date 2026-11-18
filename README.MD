@@ -178,9 +178,20 @@ Commands:
 This creates a timestamped zip file in `./backups/`, which is ignored by git.
 
 If you are about to do a risky plugin or version change, it is also worth copying `minecraft-data/` to another disk or cloud location.
-    `
-    docker compose restart
-    `
+
+## Updating the Server to Latest Minecraft
+
+To check for the latest Minecraft release and Paper builds, update the configuration, push to a PR, merge it, and restart Docker automatically:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\update-minecraft-server.ps1
+```
+
+Flags:
+- `-Force`: Runs the full backup, PR creation, merge, and Docker restart cycle even if the Minecraft major/minor version matches.
+- `-SkipBackup`: Skips pre-update backup creation.
+- `-NoPR`: Updates local files and restarts Docker without opening a GitHub PR.
+- `-TargetVersion <version>`: Explicitly target a specific Minecraft release version.
 
 # Debugging
 

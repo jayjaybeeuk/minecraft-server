@@ -3,7 +3,7 @@
 https://cdn.modrinth.com/data/PFb7ZqK6/versions/6wmZVQBO/squaremap-paper-mc26.3-1.4.3.jar
 
 # WeaponMaster pinned for reproducible installs.
-# Official Paper/Spigot build for Minecraft 1.21.11.
+# Official Paper/Spigot build for Minecraft 26.3.
 https://cdn.modrinth.com/data/JB3ramgc/versions/lwYZdKQz/weaponmaster-1.13.0.jar
 
 # EssentialsX modules pinned for reproducible installs (2.22.0).
