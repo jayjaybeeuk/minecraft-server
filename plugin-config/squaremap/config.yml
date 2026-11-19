@@ -1,4 +1,4 @@
-config-version: 2
+config-version: 3
 settings:
     language-file: lang-en.yml
     debug-mode: false
@@ -37,8 +37,6 @@ world-settings:
             display-name: '{world}'
             order: 0
             icon: ''
-            # ⚡ Bolt optimization: Limit to 1 thread to avoid starving the main server thread
-            max-render-threads: 1
             iterate-up: false
             max-height: -1
             biomes:
@@ -55,12 +53,6 @@ world-settings:
                 maximum: 3
                 default: 3
                 extra: 2
-            background-render:
-                enabled: true
-                max-chunks-per-interval: 1024
-                interval-seconds: 15
-                # ⚡ Bolt optimization: Limit to 1 thread to avoid starving the main server thread
-                max-render-threads: 1
             markers:
                 update-interval-seconds: 5
                 spawn-icon:
@@ -78,6 +70,37 @@ world-settings:
             visibility-limits:
             -   type: world-border
                 enabled: 'false'
+            render:
+                full:
+                    # ⚡ Bolt optimization: Limit workers to 1 to avoid starving main server thread
+                    workers: 1
+                    max-chunk-requests: default
+                    max-active-chunks: default
+                    max-active-regions: 2
+                    max-column-chunks: 16
+                    idle-chunk-cache-size: default
+                radius:
+                    # ⚡ Bolt optimization: Limit workers to 1 to avoid starving main server thread
+                    workers: 1
+                    max-chunk-requests: default
+                    max-active-chunks: default
+                    max-active-regions: 2
+                    max-column-chunks: 16
+                    idle-chunk-cache-size: default
+                background:
+                    enabled: true
+                    interval-seconds: 15
+                    max-chunks-per-interval: 1024
+                    # ⚡ Bolt optimization: Limit workers to 1 to avoid starving main server thread
+                    workers: 1
+                    max-chunk-requests: default
+                    max-active-chunks: default
+                    max-active-regions: 2
+                    max-column-chunks: 16
+                    idle-chunk-cache-size: default
+            image-saving:
+                workers: 2
+                max-pending-images: 100
         player-tracker:
             enabled: true
             # ⚡ Bolt optimization: Increased from 1 to 3 to reduce server CPU/IO load from constant JSON updates

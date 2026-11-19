@@ -29,33 +29,39 @@ $paperHeaders = @{ "User-Agent" = "minecraft-server-updater/1.0 (jayjaybeeuk)" }
 try {
     $paperBuildsData = Invoke-RestMethod -Uri "https://fill.papermc.io/v3/projects/paper/versions/$targetMcVersion" -Headers $paperHeaders
     $latestPaperBuild = $paperBuildsData.builds[0]
-    Write-Host "Latest Paper build for $targetMcVersion: $latestPaperBuild" -ForegroundColor Green
+    Write-Host "Latest Paper build for ${targetMcVersion}: $latestPaperBuild" -ForegroundColor Green
 } catch {
-    Write-Warning "Could not fetch Paper builds for $targetMcVersion: $_"
+    Write-Warning "Could not fetch Paper builds for ${targetMcVersion}: $_"
     $latestPaperBuild = "unknown"
 }
 
-# 3. Read current docker-compose.yml version
+# 3. Read current docker-compose.yml version & Paper build
 $composePath = Join-Path $repoRoot "docker-compose.yml"
 $composeContent = Get-Content $composePath -Raw
 $currentVersionMatch = [regex]::Match($composeContent, 'VERSION:\s*["'']?([^"''\r\n]+)["'']?')
 $currentVersion = if ($currentVersionMatch.Success) { $currentVersionMatch.Groups[1].Value } else { "unknown" }
+$currentPaperBuildMatch = [regex]::Match($composeContent, 'PAPER_BUILD:\s*["'']?([^"''\r\n]+)["'']?')
+$currentPaperBuild = if ($currentPaperBuildMatch.Success) { $currentPaperBuildMatch.Groups[1].Value } else { "unknown" }
+
 Write-Host "Current configured Minecraft VERSION: $currentVersion" -ForegroundColor Yellow
+Write-Host "Current configured Paper BUILD:       $currentPaperBuild" -ForegroundColor Yellow
 
 # 4. Check if Docker image needs pulling
 Write-Host "Pulling latest Docker image (itzg/minecraft-server:java25)..." -ForegroundColor Gray
 docker pull itzg/minecraft-server:java25
 
 # 5. Check if update is needed
-$updateNeeded = ($currentVersion -ne $targetMcVersion) -or $Force
+$versionMismatch = ($currentVersion -ne $targetMcVersion)
+$buildMismatch = ($latestPaperBuild -ne "unknown" -and $currentPaperBuild -ne "$latestPaperBuild")
+$updateNeeded = $versionMismatch -or $buildMismatch -or $Force
 
 if (-not $updateNeeded) {
-    Write-Host "Minecraft server is already configured for the latest version ($currentVersion)." -ForegroundColor Green
+    Write-Host "Minecraft server is already configured for the latest version ($currentVersion, build $currentPaperBuild)." -ForegroundColor Green
     Write-Host "Use -Force to force the PR and Docker restart cycle." -ForegroundColor Gray
     exit 0
 }
 
-Write-Host "Preparing update to Minecraft $targetMcVersion..." -ForegroundColor Cyan
+Write-Host "Preparing update to Minecraft $targetMcVersion (Paper build $latestPaperBuild)..." -ForegroundColor Cyan
 
 # 6. Stop container safely and create backup
 $runningContainer = docker ps --filter "name=minecraft-server" -q
@@ -71,9 +77,20 @@ if (-not $SkipBackup) {
 }
 
 # 7. Update docker-compose.yml
+$updatedCompose = $composeContent
 if ($currentVersion -ne $targetMcVersion) {
     Write-Host "Updating VERSION to '$targetMcVersion' in docker-compose.yml..." -ForegroundColor Gray
-    $updatedCompose = $composeContent -replace 'VERSION:\s*["''][^"'']+["'']', "VERSION: `"$targetMcVersion`""
+    $updatedCompose = $updatedCompose -replace 'VERSION:\s*["''][^"'']+["'']', "VERSION: `"$targetMcVersion`""
+}
+if ($latestPaperBuild -ne "unknown" -and $currentPaperBuild -ne "$latestPaperBuild") {
+    Write-Host "Updating PAPER_BUILD to '$latestPaperBuild' in docker-compose.yml..." -ForegroundColor Gray
+    if ($currentPaperBuildMatch.Success) {
+        $updatedCompose = $updatedCompose -replace 'PAPER_BUILD:\s*["''][^"'']+["'']', "PAPER_BUILD: `"$latestPaperBuild`""
+    } else {
+        $updatedCompose = $updatedCompose -replace '(VERSION:\s*["''][^"'']+["''])', "`$1`r`n      PAPER_BUILD: `"$latestPaperBuild`""
+    }
+}
+if ($updatedCompose -ne $composeContent) {
     Set-Content -Path $composePath -Value $updatedCompose -NoNewline
 }
 
@@ -85,7 +102,7 @@ Write-Host "Compose configuration is valid." -ForegroundColor Green
 # 8. Git branch, PR, and merge
 if (-not $NoPR) {
     $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
-    $branchName = "update-minecraft-$targetMcVersion-$timestamp"
+    $branchName = "update-minecraft-$targetMcVersion-b$latestPaperBuild-$timestamp"
     Write-Host "Creating branch $branchName..." -ForegroundColor Gray
     git checkout -b $branchName
 
@@ -93,9 +110,20 @@ if (-not $NoPR) {
     if (Test-Path (Join-Path $repoRoot "README.MD")) {
         git add README.MD
     }
+    if (Test-Path (Join-Path $repoRoot "plugin-config")) {
+        git add plugin-config
+    }
+    if (Test-Path (Join-Path $repoRoot "scripts")) {
+        git add scripts
+    }
 
-    $commitMsg = "feat: update Minecraft server to $targetMcVersion"
-    git commit -m $commitMsg
+    $commitMsg = "feat: update Minecraft server to $targetMcVersion (Paper build $latestPaperBuild)"
+    $stagedDiff = git diff --staged --name-only
+    if ($stagedDiff) {
+        git commit -m $commitMsg
+    } else {
+        git commit --allow-empty -m "$commitMsg [force rebuild]"
+    }
 
     Write-Host "Pushing $branchName to origin..." -ForegroundColor Gray
     git push -u origin $branchName
@@ -103,12 +131,12 @@ if (-not $NoPR) {
     Write-Host "Creating Pull Request via GitHub CLI..." -ForegroundColor Gray
     $prBody = @"
 ## Description
-Automated update of Minecraft server to version **$targetMcVersion** (Paper build $latestPaperBuild).
+Automated update of Minecraft server to version **$targetMcVersion** (Paper build **$latestPaperBuild**).
 
 ### Key Changes
-- Updated `VERSION` in `docker-compose.yml` to `$targetMcVersion`.
+- Updated `VERSION` to `$targetMcVersion` and `PAPER_BUILD` to `$latestPaperBuild` in `docker-compose.yml`.
 - Validated with `docker compose config`.
-- World data backup created before applying changes.
+- Safe pre-update world backup taken.
 
 ### Rollback
 1. Checkout previous commit on `main`.
@@ -117,7 +145,7 @@ Automated update of Minecraft server to version **$targetMcVersion** (Paper buil
 4. Run `docker compose up -d`.
 "@
 
-    $prUrl = gh pr create --title "feat: update Minecraft server to $targetMcVersion" --body $prBody --head $branchName --base main
+    $prUrl = gh pr create --title "feat: update Minecraft server to $targetMcVersion (Paper build $latestPaperBuild)" --body $prBody --head $branchName --base main
     Write-Host "Pull Request created: $prUrl" -ForegroundColor Green
 
     Write-Host "Merging Pull Request into main..." -ForegroundColor Gray
@@ -135,7 +163,7 @@ docker compose -f $composePath down
 docker compose -f $composePath up -d
 
 Write-Host "Waiting for Minecraft server to initialize..." -ForegroundColor Gray
-Start-Sleep -Seconds 10
+Start-Sleep -Seconds 12
 docker compose -f $composePath logs --tail 30 minecraft
 
 Write-Host "=== Minecraft Server update complete! ===" -ForegroundColor Green
