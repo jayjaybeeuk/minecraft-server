@@ -1,4 +1,4 @@
-config-version: 4
+config-version: 6
 settings:
     event-listeners:
         BlockExplodeEvent: true
@@ -39,6 +39,9 @@ world-settings:
         - minecraft:fern
         - minecraft:short_grass
         - minecraft:large_fern
+        - minecraft:bush
+        - minecraft:short_dry_grass
+        - minecraft:tall_dry_grass
         iterate-up-base-blocks:
         - minecraft:netherrack
         - minecraft:glowstone
@@ -62,6 +65,7 @@ world-settings:
                     minecraft:mangrove_swamp: '#6f9623'
                 grass: {}
                 water: {}
+                dry-foliage: {}
             blocks:
                 minecraft:terracotta: '#9E6246'
                 minecraft:mycelium: '#6F6265'
@@ -91,3 +95,9 @@ world-settings:
                 minecraft:allium: '#B878ED'
                 minecraft:pink_petals: '#FFB4DB'
                 minecraft:attached_melon_stem: '#E0C71C'
+                minecraft:wildflowers: '#EDD575'
+                minecraft:golden_dandelion: '#DBA213'
+                minecraft:torchflower: '#F6B927'
+                minecraft:pitcher_plant: '#6F6CCC'
+                minecraft:short_dry_grass: '#BA9C68'
+                minecraft:tall_dry_grass: '#BA9C68'

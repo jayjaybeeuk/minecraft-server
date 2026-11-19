@@ -8,6 +8,7 @@ services:
     environment:
       EULA: "TRUE"
       VERSION: "26.3"
+      PAPER_BUILD: "256"
       TYPE: "PAPER" # Change to SPIGOT or PAPER for plugin support
       MEMORY: "4G"
       INIT_MEMORY: "4G" # Aikar flag best practice: Xms should equal Xmx
