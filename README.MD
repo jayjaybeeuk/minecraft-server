@@ -28,7 +28,7 @@ Plugins are pinned in `plugins.txt` and loaded by the `itzg/minecraft-server` co
 This keeps plugin installs reproducible when the container is recreated.
 
 squaremap is currently pinned to `1.4.4`, the official Paper build for Minecraft `26.3`.
-The server version in `docker-compose.yml` is pinned to `26.3` (Paper build `256`) to match that plugin build exactly.
+The server version in `docker-compose.yml` is pinned to `26.3` (Paper build `257`) to match that plugin build exactly.
 The server also advertises the WeaponMaster overlay resource pack so players can accept it when they join.
 Repo-managed plugin config files live under `plugin-config/` and are bind-mounted into the container on startup.
 
