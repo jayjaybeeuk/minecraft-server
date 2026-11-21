@@ -94,6 +94,19 @@ if ($updatedCompose -ne $composeContent) {
     Set-Content -Path $composePath -Value $updatedCompose -NoNewline
 }
 
+# Update README.MD if present
+$readmePath = Join-Path $repoRoot "README.MD"
+if (Test-Path $readmePath) {
+    $readmeContent = Get-Content $readmePath -Raw
+    $pattern = 'The server version in `docker-compose.yml` is pinned to `[^`]+`(?:\s*\(Paper build `[^`]+`\))?'
+    $replacement = "The server version in ``docker-compose.yml`` is pinned to ``$targetMcVersion`` (Paper build ``$latestPaperBuild``)"
+    $updatedReadme = $readmeContent -replace $pattern, $replacement
+    if ($updatedReadme -ne $readmeContent) {
+        Write-Host "Updating version and Paper build reference in README.MD..." -ForegroundColor Gray
+        Set-Content -Path $readmePath -Value $updatedReadme -NoNewline
+    }
+}
+
 # Validate compose configuration
 Write-Host "Validating docker compose configuration..." -ForegroundColor Gray
 docker compose -f $composePath config > $null
@@ -129,12 +142,12 @@ if (-not $NoPR) {
     git push -u origin $branchName
 
     Write-Host "Creating Pull Request via GitHub CLI..." -ForegroundColor Gray
-    $prBody = @"
+    $prBody = @'
 ## Description
-Automated update of Minecraft server to version **$targetMcVersion** (Paper build **$latestPaperBuild**).
+Automated update of Minecraft server to version **{0}** (Paper build **{1}**).
 
 ### Key Changes
-- Updated `VERSION` to `$targetMcVersion` and `PAPER_BUILD` to `$latestPaperBuild` in `docker-compose.yml`.
+- Updated `VERSION` to `{0}` and `PAPER_BUILD` to `{1}` in `docker-compose.yml`.
 - Validated with `docker compose config`.
 - Safe pre-update world backup taken.
 
@@ -143,7 +156,7 @@ Automated update of Minecraft server to version **$targetMcVersion** (Paper buil
 2. Stop container: `docker compose down`.
 3. Restore `minecraft-data/` from backup archive in `backups/`.
 4. Run `docker compose up -d`.
-"@
+'@ -f $targetMcVersion, $latestPaperBuild
 
     $prUrl = gh pr create --title "feat: update Minecraft server to $targetMcVersion (Paper build $latestPaperBuild)" --body $prBody --head $branchName --base main
     Write-Host "Pull Request created: $prUrl" -ForegroundColor Green
