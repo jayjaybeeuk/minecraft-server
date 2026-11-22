@@ -48,12 +48,16 @@ Write-Host "Current configured Paper BUILD:       $currentPaperBuild" -Foregroun
 
 # 4. Check if Docker image needs pulling
 Write-Host "Pulling latest Docker image (itzg/minecraft-server:java25)..." -ForegroundColor Gray
-docker pull itzg/minecraft-server:java25
+$pullOutput = docker pull itzg/minecraft-server:java25
+$imageUpdated = ($pullOutput -match "Downloaded newer image")
+if ($imageUpdated) {
+    Write-Host "A newer base Docker image was downloaded." -ForegroundColor Cyan
+}
 
 # 5. Check if update is needed
 $versionMismatch = ($currentVersion -ne $targetMcVersion)
 $buildMismatch = ($latestPaperBuild -ne "unknown" -and $currentPaperBuild -ne "$latestPaperBuild")
-$updateNeeded = $versionMismatch -or $buildMismatch -or $Force
+$updateNeeded = $versionMismatch -or $buildMismatch -or $imageUpdated -or $Force
 
 if (-not $updateNeeded) {
     Write-Host "Minecraft server is already configured for the latest version ($currentVersion, build $currentPaperBuild)." -ForegroundColor Green
@@ -142,21 +146,29 @@ if (-not $NoPR) {
     git push -u origin $branchName
 
     Write-Host "Creating Pull Request via GitHub CLI..." -ForegroundColor Gray
-    $prBody = @'
+    $keyChanges = @()
+    if ($versionMismatch -or $buildMismatch) {
+        $keyChanges += "- Updated ``VERSION`` to ``$targetMcVersion`` and ``PAPER_BUILD`` to ``$latestPaperBuild`` in ``docker-compose.yml``."
+    } else {
+        $keyChanges += "- Rebuilt and verified server with latest Minecraft $targetMcVersion (Paper build $latestPaperBuild) and updated Docker container base image."
+    }
+    $keyChanges += "- Validated with ``docker compose config``."
+    $keyChanges += "- Safe pre-update world backup taken."
+    $keyChangesStr = $keyChanges -join "`r`n"
+
+    $prBody = @"
 ## Description
-Automated update of Minecraft server to version **{0}** (Paper build **{1}**).
+Automated update of Minecraft server to version **$targetMcVersion** (Paper build **$latestPaperBuild**).
 
 ### Key Changes
-- Updated `VERSION` to `{0}` and `PAPER_BUILD` to `{1}` in `docker-compose.yml`.
-- Validated with `docker compose config`.
-- Safe pre-update world backup taken.
+$keyChangesStr
 
 ### Rollback
 1. Checkout previous commit on `main`.
 2. Stop container: `docker compose down`.
 3. Restore `minecraft-data/` from backup archive in `backups/`.
 4. Run `docker compose up -d`.
-'@ -f $targetMcVersion, $latestPaperBuild
+"@
 
     $prUrl = gh pr create --title "feat: update Minecraft server to $targetMcVersion (Paper build $latestPaperBuild)" --body $prBody --head $branchName --base main
     Write-Host "Pull Request created: $prUrl" -ForegroundColor Green
@@ -168,6 +180,9 @@ Automated update of Minecraft server to version **{0}** (Paper build **{1}**).
     Write-Host "Switching to main branch and pulling latest changes..." -ForegroundColor Gray
     git checkout main
     git pull origin main
+    if (git branch --list $branchName) {
+        git branch -D $branchName
+    }
 }
 
 # 9. Restart Docker container
@@ -176,7 +191,7 @@ docker compose -f $composePath down
 docker compose -f $composePath up -d
 
 Write-Host "Waiting for Minecraft server to initialize..." -ForegroundColor Gray
-Start-Sleep -Seconds 12
+Start-Sleep -Seconds 18
 docker compose -f $composePath logs --tail 30 minecraft
 
 Write-Host "=== Minecraft Server update complete! ===" -ForegroundColor Green
